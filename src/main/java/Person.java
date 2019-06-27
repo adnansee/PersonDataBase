@@ -1,34 +1,106 @@
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlEnum;
-import java.sql.Blob;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Arrays;
+import org.hibernate.boot.model.TypeContributions;
+import org.hibernate.dialect.MySQLDialect;
 
 
 @Entity
+@Table(name = "person",indexes = {@Index(name = "LAST_NAME", columnList = "LastName"), @Index(columnList = "Birthday")})
+@SecondaryTable(name = "URLS")
 public class Person {
-    @Override
-    public String toString() {
-        return String.format("Person{id=%d, version=%d, FIRST_NAME='%s', LAST_NAME='%s', birthDay=%s, gender=%s, picture=%s, comment='%s', married=%s, homePage='%s'}", id, version, FIRST_NAME, LAST_NAME, birthDay, gender, picture, comment, married, homePage);
+
+    public Person(Address address, long version, String FIRST_NAME, String LAST_NAME, LocalDate birthDay, GenderType gender, byte[] picture, String comment, boolean married, String homePage, int age) {
+        this.address = address;
+        this.version = version;
+        this.FIRST_NAME = FIRST_NAME;
+        this.LAST_NAME = LAST_NAME;
+        this.birthDay = birthDay;
+        this.gender = gender;
+        this.picture = picture;
+        this.comment = comment;
+        this.married = married;
+        this.homePage = homePage;
+        this.age = age;
     }
 
     @Id
     @GeneratedValue
+    @Column(name = "ID")
     private int id;
+
+
+
+    @Embedded
+    private Address address;
+
+
     @Column(name = "Version")
     private long version;
-    @Column(name = "FirstName")
+
+    @Column(name = "FirstName", length = 40, nullable = false)
     private String FIRST_NAME;
-    @Column(name = "LastName")
+
+    @Column(name = "LastName", length = 40, nullable = false)
     private String LAST_NAME;
+
     @Column(name = "Birthday")
     private LocalDate birthDay;
+
+    @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private GenderType gender;
+
     @Lob
-    private Blob picture;
+    @Column(name = "Picture")
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] picture;
+
     @Column(name = "Comment")
+    @Lob
     private String comment;
+
+    @Column(name = "Married", columnDefinition = "BOOLEAN")
+    private boolean married;
+
+    @Column(name = "HomePage", table = "URLS") //, table = "URLS"
+    private String homePage;
+
+    @Column(name = "Age")
+    private int age;
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public Person setAddress(Address address) {
+        this.address = address;
+        return this;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Person setAge(int age) {
+        this.age = age;
+        return this;
+    }
+
+    public Person(long version, String FIRST_NAME, String LAST_NAME, LocalDate birthDay, GenderType gender, byte[] picture, String comment, boolean married, String homePage, int age) {
+        this.version = version;
+        this.FIRST_NAME = FIRST_NAME;
+        this.LAST_NAME = LAST_NAME;
+        this.birthDay = birthDay;
+        this.gender = gender;
+        this.picture = picture;
+        this.comment = comment;
+        this.married = married;
+        this.homePage = homePage;
+        this.age = age;
+    }
+
+
 
     public int getId() {
         return id;
@@ -84,11 +156,11 @@ public class Person {
         return this;
     }
 
-    public Blob getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public Person setPicture(Blob picture) {
+    public Person setPicture(byte[] picture) {
         this.picture = picture;
         return this;
     }
@@ -123,20 +195,10 @@ public class Person {
     public Person() {
     }
 
-    public Person(int id, long version, String FIRST_NAME, String LAST_NAME, LocalDate birthDay, GenderType gender, Blob picture, String comment, boolean married, String homePage) {
-        this.id = id;
-        this.version = version;
-        this.FIRST_NAME = FIRST_NAME;
-        this.LAST_NAME = LAST_NAME;
-        this.birthDay = birthDay;
-        this.gender = gender;
-        this.picture = picture;
-        this.comment = comment;
-        this.married = married;
-        this.homePage = homePage;
+
+
+    @Override
+    public String toString() {
+        return String.format("Person{id=%d, address=%s, version=%d, FIRST_NAME='%s', LAST_NAME='%s', birthDay=%s, gender=%s, picture=%s, comment='%s', married=%s, homePage='%s', age=%d}", id, address, version, FIRST_NAME, LAST_NAME, birthDay, gender, Arrays.toString(picture), comment, married, homePage, age);
     }
-
-    private boolean married;
-    private String homePage;
-
 }

@@ -15,8 +15,8 @@ public class MainPersonApp {
         tx.begin();
 
 
-      Person person1 = new Person();
-        person1.setBirthDay(LocalDate.ofEpochDay(1986 - 18 - 10));
+        Person person1 = new Person();
+        person1.setBirthDay(LocalDate.of(1986,10 ,18));
         person1.setFIRST_NAME("Eddy");
         person1.setLAST_NAME("Sa");
         person1.setVersion(22);
@@ -24,8 +24,8 @@ public class MainPersonApp {
         person1.setMarried(true);
         person1.setGender(GenderType.MAN);
         person1.setHomePage("bushcraft.com");
-
-
+        person1.setAge(30);
+        person1.setAddress(new Address("heartStreet","3","1000","BRUSSEL","Belgie"));
 
 
         Person person2 = new Person();
@@ -35,12 +35,25 @@ public class MainPersonApp {
         person2.setVersion(21);
         person2.setLAST_NAME("Viskere");
         person2.setFIRST_NAME("Inta");
-        person2.setBirthDay(LocalDate.ofEpochDay(1984-20-1));
+        person2.setBirthDay(LocalDate.of(1984,1,20));
         person2.setHomePage("blablabla.com");
+        person2.setAge(32);
+
+        Person person3 = new Person();
+        person3.setAge(1);
+        person3.setHomePage("hills.com");
+        person3.setBirthDay(LocalDate.of(2018,4,29));
+        person3.setFIRST_NAME("Ricky");
+        person3.setLAST_NAME("Taki");
+        person3.setVersion(1);
+        person3.setComment("PURR");
+        person3.setGender(GenderType.MAN);
+        person3.setMarried(false);
 
 
         em.persist(person1);
         em.persist(person2);
+        em.persist(person3);
 
         Person findP = em.find(Person.class,3);
         System.out.println(findP.toString());
